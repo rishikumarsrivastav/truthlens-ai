@@ -84,19 +84,23 @@ The system combines Natural Language Processing (NLP), Machine Learning, credibi
 TruthLensAI/
 │
 ├── App/
+│   ├── __init__.py
 │   ├── credibility.py
 │   ├── explainer.py
 │   ├── preprocessor.py
 │   ├── routes.py
-│   ├── translator.py
-│   └── __init__.py
+│   ├── text_utils.py
+│   ├── train_model.py
+│   └── translator.py
 │
 ├── Data/
-│   ├── WELFake_Dataset.csv
+│   ├── fake_news_cleaned.csv
+│   ├── source_credibility.json
 │   ├── WELFake_Cleaned.csv
-│   └── source_credibility.json
+│   └── WELFake_Dataset.csv
 │
 ├── Model/
+│   ├── lr_model.pkl
 │   ├── pac_model.pkl
 │   └── tfidf_vectorizer.pkl
 │
@@ -105,14 +109,17 @@ TruthLensAI/
 │
 ├── Static/
 │   ├── index.html
-│   ├── style.css
-│   └── script.js
+│   ├── script.js
+│   └── style.css
 │
-├── run.py
-├── train_model.py
+├── venv/
+├── checkmodel.py
 ├── data_cleaning.py
+├── README.md
 ├── requirements.txt
-└── README.md
+├── run.py
+│
+└── .gitignore
 ```
 
 ---
