@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TruthLens — Verify before you forward</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <h1>TruthLens</h1>
+    <p class="tag">Check before you forward</p>
+    <p class="tag-hi" lang="hi">फ़ॉरवर्ड करने से पहले जाँच लें</p>
+  </header>
+
+  <main class="sheet">
+    <section class="card bubble-card">
+      <p class="eyebrow">↪ Forwarded message</p>
+      <textarea id="messageInput" rows="6" placeholder="Paste the WhatsApp message or news text you want to check…"></textarea>
+      <p id="inputError" class="error" hidden>Paste a message first.</p>
+
+      <label class="field-label" for="urlInput">Source link <span class="opt">(optional)</span></label>
+      <input id="urlInput" type="url" placeholder="https://…">
+
+      <button id="checkBtn" type="button">
+        <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="btn-label">Check Now</span>
+      </button>
+    </section>
+
+    <section id="resultCard" class="card result-card" aria-live="polite">
+      <div class="score-meter" id="scoreMeter" hidden>
+        <svg class="meter-ring" viewBox="0 0 120 120">
+          <circle class="meter-track" cx="60" cy="60" r="52" />
+          <circle id="meterFill" class="meter-fill" cx="60" cy="60" r="52" />
+        </svg>
+        <div class="meter-center">
+          <span id="meterPercent" class="meter-percent">—</span>
+        </div>
+      </div>
+      <div class="stamp" id="stamp"><span id="resultTitle">Ready</span></div>
+      <span class="badge" id="confidenceBadge" hidden></span>
+      <div id="sourceBadge" class="source-badge" hidden></div>
+      <p id="resultSubtitle">Paste a message above and tap Check Now.</p>
+
+      <div id="translationPanel" class="translation-panel" hidden>
+        <div class="translation-col">
+          <span id="originalLabel" class="translation-label">Original</span>
+          <p id="originalTextDisplay" class="translation-text"></p>
+        </div>
+        <div class="translation-col">
+          <span class="translation-label">🌐 English</span>
+          <p id="translatedTextDisplay" class="translation-text"></p>
+        </div>
+      </div>
+
+      <div id="highlightedText" class="highlighted-text" hidden></div>
+      <div id="highlightLegend" class="legend" hidden>
+        <span class="legend-item"><span class="legend-swatch hl-fake"></span>Red = suspicious</span>
+        <span class="legend-item"><span class="legend-swatch hl-real"></span>Green = credible</span>
+      </div>
+
+      <p id="recommendation" class="rec" hidden></p>
+      <p id="responseTime" class="response-time" hidden></p>
+      <button id="checkAnotherBtn" type="button" class="check-another-btn" hidden>Check another message</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
