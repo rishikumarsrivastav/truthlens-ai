@@ -7,13 +7,13 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python">
   <img src="https://img.shields.io/badge/Flask-Web%20Framework-black?logo=flask">
-  <img src="https://img.shields.io/badge/Machine%20Learning-Passive%20Aggressive-orange">
+  <img src="https://img.shields.io/badge/Machine%20Learning-Logistic%20Regression-orange">
   <img src="https://img.shields.io/badge/NLP-TF--IDF-green">
   <img src="https://img.shields.io/badge/Status-Active-success">
   <img src="https://img.shields.io/badge/License-MIT-blue">
 </p>
 
-**An AI-powered web application that detects fake news, explains its predictions, estimates credibility, and supports multilingual translation.**
+**A web app that checks WhatsApp forwards and news text, gives a True / False / Unverified result, shows a trust score, and highlights the words behind the decision.**
 
 </div>
 
@@ -21,34 +21,37 @@
 
 # 📖 Overview
 
-**TruthLens AI** is a machine learning-powered fake news detection system designed to help users identify misinformation. Instead of only predicting whether a news article is **Real** or **Fake**, the application also explains **why** the prediction was made using Explainable AI techniques.
+**TruthLens AI** helps people check a message before they forward it. You paste a WhatsApp message or news text, optionally add the link it came from, and the app tells you whether it looks reliable.
 
-The system combines Natural Language Processing (NLP), Machine Learning, credibility analysis, and multilingual translation to provide transparent and accessible results.
+It does not only give a label. It also shows how much it trusts the message, which words pushed the result towards fake or real, and how credible the source website is. Messages in Hindi and other languages are translated to English before they are checked.
 
 ---
 
 # ✨ Key Features
 
 ### 📰 Fake News Detection
-- Predicts whether a news article is **Real** or **Fake**
-- Fast and accurate classification using Machine Learning
+- Classifies a message as **True**, **False** or **Unverified**
+- Says "Unverified" instead of guessing when the message is too short or unclear
 
 ### 🧠 Explainable AI
-- Highlights important words influencing the prediction
-- Makes AI decisions easy to understand
+- Uses LIME to highlight the words that pushed the result towards fake (red) or real (green)
 
-### 📊 Credibility Score
-- Displays confidence percentage
-- Visual confidence meter for better interpretation
+### 📊 Trust Score
+- Trust score from 0 to 100% shown on a visual meter
+- Combines the text analysis (70%) with the credibility of the source link (30%)
+- A message that sounds real but links to a known fake-news site is marked Unverified
 
-### 🌐 Multilingual Translation
-- Translate predictions and explanations into multiple languages
-- Improves accessibility for diverse users
+### 🔗 Source Credibility
+- Checks the link against a list of Indian and international news sites
+- Unknown websites get a neutral score
 
-### 🎨 Interactive Web Interface
-- Clean and responsive UI
-- Instant prediction results
-- User-friendly experience
+### 🌐 Multilingual Input
+- Detects the language of the message
+- Translates non-English text (for example Hindi) to English before checking it, and shows both versions
+
+### 🎨 Clean Web Interface
+- Built for pasting WhatsApp forwards
+- Works on phone and desktop
 
 ---
 
@@ -65,15 +68,19 @@ The system combines Natural Language Processing (NLP), Machine Learning, credibi
 
 ### Machine Learning
 - TF-IDF Vectorizer
-- Passive Aggressive Classifier (PAC)
+- Logistic Regression
+- LIME (word highlighting)
 
-### Dataset
+### Datasets
 - WELFake Dataset
+- Kaggle fake news dataset (combined with WELFake, duplicates removed)
 
 ### Libraries
 - Scikit-learn
 - Pandas
 - NumPy
+- langdetect
+- deep-translator
 - Pickle
 
 ---
@@ -90,18 +97,16 @@ TruthLensAI/
 │   ├── preprocessor.py
 │   ├── routes.py
 │   ├── text_utils.py
-│   ├── train_model.py
 │   └── translator.py
 │
 ├── Data/
 │   ├── fake_news_cleaned.csv
 │   ├── source_credibility.json
-│   ├── WELFake_Cleaned.csv
-│   └── WELFake_Dataset.csv
+│   ├── WELFake_Dataset.csv
+│   └── Combined_Cleaned.csv        (created by data_cleaning.py)
 │
-├── Model/
+├── Model/                          (created by train_model.py)
 │   ├── lr_model.pkl
-│   ├── pac_model.pkl
 │   └── tfidf_vectorizer.pkl
 │
 ├── Notebook/
@@ -115,6 +120,7 @@ TruthLensAI/
 ├── venv/
 ├── checkmodel.py
 ├── data_cleaning.py
+├── train_model.py
 ├── README.md
 ├── requirements.txt
 ├── run.py
@@ -164,7 +170,27 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 6. Run the application
+---
+
+# 🧪 Train the Model
+
+The datasets and trained model files are large, so they are not stored in the repository. Put `WELFake_Dataset.csv` and the new Kaggle dataset inside the `Data/` folder, then run these from the project root:
+
+```bash
+python data_cleaning.py
+python train_model.py
+python checkmodel.py
+```
+
+- `data_cleaning.py` merges the datasets, cleans the text, removes duplicates and saves `Data/Combined_Cleaned.csv`
+- `train_model.py` trains the model and saves it in the `Model/` folder
+- `checkmodel.py` tries a few sample messages. Fake-style messages should score high and real-style messages low
+
+Labels are `0 = real` and `1 = fake` everywhere in the project.
+
+---
+
+# ▶️ Run the Application
 
 ```bash
 python run.py
@@ -176,42 +202,56 @@ Open your browser and visit:
 http://127.0.0.1:5000
 ```
 
+Do not open `Static/index.html` directly. The page needs the Flask server to work.
+
 ---
 
 # 🔄 Workflow
 
 ```text
-User Input
+User Message (+ optional source link)
      │
      ▼
-Text Preprocessing
+WhatsApp Text Cleaning
+     │
+     ▼
+Language Detection → Translation to English
      │
      ▼
 TF-IDF Vectorization
      │
      ▼
-Passive Aggressive Classifier
+Logistic Regression  →  probability of fake
      │
      ▼
-Prediction
+Combine with Source Credibility
      │
-     ├── Fake / Real
-     ├── Confidence Score
-     ├── Explanation
-     └── Translation
+     ├── True / False / Unverified
+     ├── Trust Score
+     ├── Highlighted Words (LIME)
+     └── Translation Panel
 ```
+
+---
+
+# ⚠️ Limitations
+
+- The training data is mostly US political news from 2016–2017, so results on Indian or WhatsApp-style messages are a first-pass signal, not a final answer
+- Very short messages are marked Unverified
+- The model checks writing style, not facts. Always confirm with a trusted fact-checking source before forwarding
 
 ---
 
 # 🚀 Future Improvements
 
-- ✅ BERT-based Fake News Detection
-- ✅ Live News API Integration
-- ✅ Fact-check API Integration
-- ✅ Speech-to-Text Support
-- ✅ Dark Mode
-- ✅ User Authentication
-- ✅ Cloud Deployment (Render/AWS)
+- [ ] Train on real WhatsApp forwards with verified labels
+- [ ] BERT-based fake news detection
+- [ ] Live news API integration
+- [ ] Fact-check API integration
+- [ ] Better support for Hinglish (Hindi written in English letters)
+- [ ] Speech-to-text support
+- [ ] Dark mode
+- [ ] Cloud deployment (Render/AWS)
 
 ---
 
