@@ -4,6 +4,8 @@
 
 ### Explainable Fake News Detection using Machine Learning & NLP
 
+https://truthlens-ai-2zy0.onrender.com/
+ 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python">
   <img src="https://img.shields.io/badge/Flask-Web%20Framework-black?logo=flask">
